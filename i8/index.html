@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gönguferð um i8</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Immersive viewer: one full-bleed panorama, quiet dark chips on top. Deliberately single-theme (dark UI over imagery). */
+:root {
+  color-scheme: dark;
+  --bg: #0c0d0d;
+  --ink: #f2f2ef;
+  --muted: #c9ccc7;           /* >= 4.5:1 on the chip even over the white walls */
+  --chip: rgba(16, 17, 17, 0.8);
+  --chip-solid: #161818;
+  --line: rgba(255, 255, 255, 0.16);
+  --accent: #f3e6d6;          /* warm white of the gallery light */
+  --display: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --safe-l: max(16px, env(safe-area-inset-left, 0px));
+  --safe-r: max(16px, env(safe-area-inset-right, 0px));
+  --safe-b: max(14px, env(safe-area-inset-bottom, 0px));
+}
+html, body { height: 100%; margin: 0; background: var(--bg); color: var(--ink); overflow: hidden;
+  font: 400 15px/1.45 var(--body); -webkit-font-smoothing: antialiased; }
+#view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline: none; }
+#view.dragging { cursor: grabbing; }
+#view.pointing { cursor: pointer; }
+#view:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.hud { position: fixed; inset: 0; pointer-events: none; display: grid; grid-template-rows: auto 1fr auto;
+  padding-left: var(--safe-l); padding-right: var(--safe-r);
+  padding-block: max(14px, env(safe-area-inset-top, 0px)) var(--safe-b); gap: 12px; }
+.hud > * { pointer-events: auto; }
+.hud > .spacer { pointer-events: none; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; pointer-events: none; }
+.top > * { pointer-events: auto; }
+.chip { background: var(--chip); border: 1px solid var(--line); border-radius: 6px; backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); }
+.title { padding: 10px 14px; display: grid; gap: 2px; max-width: min(26rem, 100%); }
+.title h1 { font: 400 1.55rem/1.05 var(--display); margin: 0; letter-spacing: .01em; }
+.title .sub { color: var(--muted); font-size: .82rem; }
+.title .here { font-size: .82rem; color: var(--accent); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+button { font: inherit; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 12px; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+button:hover { border-color: rgba(255,255,255,.4); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body.guiding #guide { border-color: var(--accent); color: var(--accent); }
+.bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; pointer-events: none; }
+.bottom > * { pointer-events: auto; }
+.hint { padding: 8px 12px; font-size: .84rem; color: var(--muted); transition: opacity .6s; max-width: 30rem; }
+.hint.gone { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .6s, visibility 0s linear .6s; }
+.caption { position: fixed; left: 50%; bottom: var(--safe-b); transform: translate(-50%, 8px);
+  padding: 10px 12px 10px 16px; display: flex; align-items: center; gap: 4px 14px; opacity: 0; pointer-events: none;
+  visibility: hidden; transition: opacity .4s, transform .4s, visibility 0s linear .4s; max-width: calc(100% - 32px); }
+.caption.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; visibility: visible; transition: opacity .4s, transform .4s; }
+.caption .ct { font: italic 400 1.9rem/1 var(--display); }
+.caption .cm { color: var(--muted); font-size: .86rem; }
+.caption button { padding: 6px 10px; }
+.map { padding: 8px; }
+.map svg { display: block; width: 190px; height: auto; touch-action: manipulation; }
+.map .dot, .map .work { cursor: pointer; }
+.map .dot:focus, .map .work:focus { outline: none; }
+.map .ring { fill: none; stroke: var(--accent); stroke-width: 1.3; pointer-events: none; }
+.map .lbl { font: 500 .7rem/1 var(--body); color: var(--muted); letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 2px 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.map .lbl button { padding: 0 6px; border: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; line-height: 1.2; }
+.map.closed svg { display: none; }
+.tip { position: fixed; left: 0; top: 0; padding: 4px 8px; font: 400 1rem/1.2 var(--display); pointer-events: none;
+  transform: translate(-50%, -130%); white-space: nowrap; opacity: 0; transition: opacity .15s; }
+.tip.on { opacity: 1; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(26rem, 100%); background: var(--chip-solid);
+  border-left: 1px solid var(--line); transform: translateX(105%); visibility: hidden;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), visibility 0s linear .35s;
+  display: grid; grid-template-rows: auto 1fr; padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.panel.open { transform: none; visibility: visible; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.panel .head { display: flex; justify-content: flex-end; padding: 10px 12px 0; }
+.panel .body { overflow-y: auto; padding: 4px 20px 24px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.panel img { width: 100%; height: auto; border-radius: 3px; background: #222; display: block; }
+.panel h2 { font: 400 3rem/1 var(--display); margin: 0; font-style: italic; }
+.panel dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: .92rem; }
+.panel dt { color: var(--muted); }
+.panel dd { margin: 0; font-variant-numeric: tabular-nums; }
+.panel a { color: var(--accent); }
+.loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); transition: opacity .5s;
+  font: 400 1.4rem var(--display); color: var(--muted); padding: 24px; text-align: center; }
+.loading.done { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .5s, visibility 0s linear .5s; }
+.loading[role="alert"] { color: var(--ink); }
+.notice { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 10px 14px; max-width: min(24rem, calc(100% - 32px));
+  text-align: center; pointer-events: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0; }
+@media (max-width: 640px) {
+  .title h1 { font-size: 1.25rem; }
+  .map svg { width: 140px; }
+  .hint { font-size: .78rem; }
+  /* the guided caption sits on the bottom edge, full width; the plan and the hint make way for it */
+  .caption { left: var(--safe-l); right: var(--safe-r); max-width: none; transform: translateY(8px); flex-wrap: wrap; }
+  .caption.on { transform: none; }
+  .caption .ct { font-size: 1.5rem; }
+  body.guiding .map, body.guiding .hint { display: none; }
+  .panel { top: auto; height: 78%; width: 100%; border-left: 0; border-top: 1px solid var(--line);
+    transform: translateY(105%); border-radius: 10px 10px 0 0; }
+  .panel.open { transform: none; }
+}
+@media (max-height: 500px) {
+  /* landscape phones: smaller chips, the caption keeps clear of the plan */
+  .title { padding: 6px 10px; }
+  .title h1 { font-size: 1.1rem; }
+  .title .sub { display: none; }
+  .map svg { width: 104px; }
+  .hint { max-width: 45%; font-size: .78rem; }
+  .caption { left: var(--safe-l); right: auto; transform: translateY(8px); max-width: calc(100% - 180px); flex-wrap: wrap; }
+  .caption.on { transform: none; }
+  .caption .ct { font-size: 1.4rem; }
+  .panel { width: min(24rem, 62%); }
+}
+@media (prefers-reduced-motion: reduce) { .panel, .panel.open, .hint, .loading, .caption, .caption.on { transition: none; } }
+</style>
+</head>
+<body>
+<canvas id="view" tabindex="0" role="application" aria-roledescription="360° skoðari"
+  aria-label="360° útsýni yfir salinn í i8. Örvatakkar: líta í kring. W eða Enter: ganga áfram. S: ganga til baka. I eða bilstöng: upplýsingar um verkið fyrir framan þig."></canvas>
+<div class="hud">
+  <div class="top">
+    <div class="chip title">
+      <h1>Janice Kerbel</h1>
+      <div class="sub" id="sub"></div>
+      <div class="here" id="here"></div>
+    </div>
+    <div class="btns">
+      <button id="guide" type="button" title="Ganga sjálfkrafa á milli verkanna">Leiðsögn</button>
+      <button id="fs" type="button">Allur skjárinn</button>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="bottom">
+    <div class="chip hint" id="hint">Dragðu til að líta í kring. Smelltu á hvítan punkt á gólfinu til að ganga þangað eða á verk til að skoða það nánar. Veldu „Leiðsögn“ til að ganga sjálfkrafa á milli verkanna.</div>
+    <div class="chip caption" id="caption" aria-live="polite"></div>
+    <div class="chip map" id="map">
+      <div class="lbl"><span id="maplbl">Grunnmynd</span><button id="mapToggle" type="button" aria-expanded="true" aria-controls="mapsvg" aria-label="Fela grunnmynd">–</button></div>
+      <svg id="mapsvg" viewBox="0 0 100 100" role="group" aria-labelledby="maplbl"></svg>
+    </div>
+  </div>
+</div>
+<div class="chip tip" id="tip" aria-hidden="true"></div>
+<aside class="panel" id="panel" role="dialog" aria-labelledby="ptitle" aria-hidden="true">
+  <div class="head"><button id="close" type="button">Loka</button></div>
+  <div class="body" id="pbody"></div>
+</aside>
+<div class="loading" id="loading">Hleð inn salnum…</div>
+<div class="chip notice" id="notice" role="status" hidden></div>
+<div class="sr-only" id="sr" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+document.documentElement.lang = "is";
+const DATA = {"eye":1.6,"start":"V01","nodes":[{"id":"V01","name":"Inngangur","x":-1.75,"y":-5.4,"look":85,"links":["V02","V03","V10","V12","V14","V15","V16"]},{"id":"V02","name":"Við „u“","x":-1.45,"y":-3.55,"look":180,"links":["V01","V03","V04","V05","V06","V07","V12","V14","V15","V16"]},{"id":"V03","name":"Við vesturvegginn","x":-1.45,"y":-1.75,"look":150,"links":["V01","V02","V04","V05","V06","V07","V08","V14","V15","V16"]},{"id":"V04","name":"Við „i“","x":-1.45,"y":0.05,"look":180,"links":["V02","V03","V05","V06","V07","V08","V10","V15","V16"]},{"id":"V05","name":"Við gegnumganginn","x":-2.3,"y":0.85,"look":100,"links":["V02","V03","V04","V06","V07","V16"]},{"id":"V06","name":"Við „em“ og „tee“","x":-0.3,"y":0.3,"look":90,"links":["V02","V03","V04","V05","V07","V08","V09","V10","V15","V16"]},{"id":"V07","name":"Fyrir miðju, norðan til","x":0.4,"y":-1.1,"look":60,"links":["V02","V03","V04","V05","V06","V08","V09","V10","V11","V12","V15","V16"]},{"id":"V08","name":"Við „gee“","x":2.35,"y":0.3,"look":90,"links":["V03","V04","V06","V07","V09","V10","V11","V16"]},{"id":"V09","name":"Við „cue“","x":3.55,"y":0.45,"look":10,"links":["V06","V07","V08","V10","V11"]},{"id":"V10","name":"Austan við súluna","x":1.85,"y":-2.65,"look":0,"links":["V01","V04","V06","V07","V08","V09","V11","V12","V13","V14","V15","V16"]},{"id":"V11","name":"Við „cee“ og „bee“","x":3.35,"y":-2.7,"look":0,"links":["V07","V08","V09","V10","V12","V13","V14","V15","V16"]},{"id":"V12","name":"Við gluggann","x":2.75,"y":-4.55,"look":270,"links":["V01","V02","V07","V10","V11","V13","V14","V15"]},{"id":"V13","name":"Við „wye“","x":3.25,"y":-5.05,"look":352,"links":["V10","V11","V12","V14","V15"]},{"id":"V14","name":"Sunnan til, milli dyra og glugga","x":0.4,"y":-4.55,"look":90,"links":["V01","V02","V03","V10","V11","V12","V13","V15","V16"]},{"id":"V15","name":"Vestan við súluna","x":-1.0,"y":-3.95,"look":60,"links":["V01","V02","V03","V04","V06","V07","V10","V11","V12","V13","V14","V16"]},{"id":"V16","name":"Fyrir miðju, vestan til","x":-0.95,"y":-1.35,"look":30,"links":["V01","V02","V03","V04","V05","V06","V07","V08","V10","V11","V14","V15"]}],"works":[{"id":"P01","title":"u","year":2026,"h":128.0,"w":89.5,"d":2.5,"url":"https://i8.is/exhibitions/223/works/artworks21761/","corners":[[-3.1873,-3.9833,0.362],[-3.1873,-3.0883,0.362],[-3.1873,-3.0883,1.642],[-3.1873,-3.9833,1.642]],"wall":"W1","img":true},{"id":"P02","title":"i","year":2026,"h":128.0,"w":89.5,"d":2.5,"url":"https://i8.is/exhibitions/223/works/artworks21760/","corners":[[-3.1873,-0.5163,0.358],[-3.1873,0.3787,0.358],[-3.1873,0.3787,1.638],[-3.1873,-0.5163,1.638]],"wall":"W1","img":true},{"id":"P03","title":"em","year":2026,"h":98.5,"w":69.0,"d":2.5,"url":"https://i8.is/exhibitions/223/works/artworks21764/","corners":[[-1.1313,1.6223,0.6495],[-0.4413,1.6223,0.6495],[-0.4413,1.6223,1.6345],[-1.1313,1.6223,1.6345]],"wall":"W2","img":true},{"id":"P04","title":"tee","year":2026,"h":26.5,"w":21.0,"d":2.5,"url":"https://i8.is/exhibitions/223/works/artworks21766/","corners":[[0.2017,1.6223,1.1825],[0.4117,1.6223,1.1825],[0.4117,1.6223,1.4475],[0.2017,1.6223,1.4475]],"wall":"W2","img":true},{"id":"P05","title":"gee","year":2026,"h":98.5,"w":69.0,"d":3.0,"url":"https://i8.is/exhibitions/223/works/artworks21762/","corners":[[2.2547,1.6003,0.6495],[2.9447,1.6003,0.6495],[2.9447,1.6003,1.6345],[2.2547,1.6003,1.6345]],"wall":"W2","img":true},{"id":"P06","title":"cue","year":2026,"h":26.5,"w":21.0,"d":3.0,"url":"https://i8.is/exhibitions/223/works/artworks21650/","corners":[[4.5023,1.0793,1.1815],[4.5023,0.8693,1.1815],[4.5023,0.8693,1.4465],[4.5023,1.0793,1.4465]],"wall":"W3","img":true},{"id":"P07","title":"cee","year":2026,"h":58.5,"w":41.0,"d":2.5,"url":"https://i8.is/exhibitions/223/works/artworks21765/","corners":[[4.5073,-2.2617,0.8705],[4.5073,-2.6717,0.8705],[4.5073,-2.6717,1.4555],[4.5073,-2.2617,1.4555]],"wall":"W3","img":true},{"id":"P08","title":"bee","year":2026,"h":58.5,"w":41.0,"d":2.5,"url":"https://i8.is/exhibitions/223/works/artworks21763/","corners":[[4.5073,-2.7567,0.8695],[4.5073,-3.1667,0.8695],[4.5073,-3.1667,1.4545],[4.5073,-2.7567,1.4545]],"wall":"W3","img":true},{"id":"P09","title":"wye","year":2025,"h":166.0,"w":116.0,"d":3.0,"url":"https://i8.is/exhibitions/223/works/artworks21075/","corners":[[4.5023,-4.6577,0.173],[4.5023,-5.8177,0.173],[4.5023,-5.8177,1.833],[4.5023,-4.6577,1.833]],"wall":"W3","img":true}],"room":{"box":[-3.2143043886477436,-6.594424828218683,0.0,4.534304388647743,1.6493043886477434,4.375761005102806],"column":[-0.022856329319306215,-3.074790496246766,0.0,0.7849976223458281,-2.2599074522703275,4.375761005102806],"outline":[[-3.2143043886477436,1.6493043886477434],[4.534304388647743,1.6493043886477434],[4.534304388647743,-6.594424828218683],[1.0082957716604337,-6.594424828218683],[1.0082957716604337,-5.872304388647743],[-0.2818446982539802,-5.872304388647743],[-0.2818446982539802,-6.573354464422006],[-3.2143043886477436,-6.573354464422006]],"passage":[-3.2143043886477436,-2.029901671815587],"proxy":{"walls":[[-3.2143,1.6493,-2.0299,1.6493,2.544,4.3758],[-2.0299,1.6493,4.5343,1.6493,0.0,4.3758],[4.5343,1.6493,4.5343,-6.5944,0.0,4.3758],[4.5343,-6.5944,1.0083,-6.5944,0.0,4.3758],[1.0083,-6.5944,1.0083,-5.8723,0.0,4.3758],[1.0083,-5.8723,-0.2818,-5.8723,0.0,4.3758],[-0.2818,-5.8723,-0.2818,-6.5734,0.0,4.3758],[-0.2818,-6.5734,-3.2143,-6.5734,0.0,4.3758],[-3.2143,-6.5734,-3.2143,1.6493,0.0,4.3758],[-3.2143,1.6493,-3.2143,2.55,0.0,2.544],[-2.0299,1.6493,-2.0299,2.55,0.0,2.544],[-4.409,2.55,-3.2143,2.55,0.0,2.62],[-2.0299,2.55,-0.165,2.55,0.0,2.62],[-3.2143,2.55,-2.0299,2.55,2.544,2.62],[-0.165,2.55,-0.165,5.216,0.0,2.62],[-0.165,5.216,-4.409,5.216,0.0,2.62],[-4.409,5.216,-4.409,2.55,0.0,2.62],[-0.0229,-3.0748,0.785,-3.0748,0.0,4.3758],[0.785,-3.0748,0.785,-2.2599,0.0,4.3758],[0.785,-2.2599,-0.0229,-2.2599,0.0,4.3758],[-0.0229,-2.2599,-0.0229,-3.0748,0.0,4.3758]],"floors":[{"z":0.0,"poly":[[-3.2143,1.6493],[4.5343,1.6493],[4.5343,-6.5944],[1.0083,-6.5944],[1.0083,-5.8723],[-0.2818,-5.8723],[-0.2818,-6.5734],[-3.2143,-6.5734]]},{"z":4.3758,"poly":[[-3.2143,1.6493],[4.5343,1.6493],[4.5343,-6.5944],[1.0083,-6.5944],[1.0083,-5.8723],[-0.2818,-5.8723],[-0.2818,-6.5734],[-3.2143,-6.5734]]},{"z":0.0,"poly":[[-3.2143,1.6493],[-2.0299,1.6493],[-2.0299,2.55],[-3.2143,2.55]]},{"z":2.544,"poly":[[-3.2143,1.6493],[-2.0299,1.6493],[-2.0299,2.55],[-3.2143,2.55]]},{"z":0.0,"poly":[[-4.409,2.55],[-0.165,2.55],[-0.165,5.216],[-4.409,5.216]]},{"z":2.62,"poly":[[-4.409,2.55],[-0.165,2.55],[-0.165,5.216],[-4.409,5.216]]}]}},"guided":[{"node":"V01","look_deg":85},{"node":"V02","work":"P01"},{"node":"V04","work":"P02"},{"node":"V06","work":"P03"},{"node":"V06","work":"P04"},{"node":"V08","work":"P05"},{"node":"V09","work":"P06"},{"node":"V11","work":"P07"},{"node":"V11","work":"P08"},{"node":"V13","work":"P09"},{"node":"V12","look_deg":150}],"exhibition":{"artist":"Janice Kerbel","place":"i8, Tryggvagata 16, Reykjavík","dates":"17. september – 7. nóvember 2026","medium":"mósaík úr glersmalti","url":"https://i8.is/exhibitions/223/"}};
+(function () {
+  const loadingEl = document.getElementById("loading");
+  function fatal(msg) {
+    loadingEl.textContent = msg; loadingEl.setAttribute("role", "alert"); loadingEl.classList.remove("done");
+  }
+  if (!window.THREE || !DATA) { fatal("Ekki tókst að hlaða skoðaranum. Prófaðu að endurhlaða síðuna."); return; }
+  if (!DATA.nodes || !DATA.nodes.length) { fatal("Engar 360° myndir fundust."); return; }
+  const canvas = document.getElementById("view");
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
+  catch (e) { fatal("Vafrinn styður ekki WebGL, sem þarf fyrir 360° útsýnið."); return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // phones take the GPU away from a page in the background and give it back later: say so, without blocking
+  const notice = document.getElementById("notice");
+  let forceRender = true;
+  canvas.addEventListener("webglcontextlost", e => {
+    e.preventDefault();
+    notice.textContent = "Skjákortið losaði minni. Myndin kemur aftur eftir augnablik; annars skaltu endurhlaða síðuna.";
+    notice.hidden = false;
+  });
+  canvas.addEventListener("webglcontextrestored", () => { notice.hidden = true; forceRender = true; });
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(72, 1, 0.02, 200);
+  camera.up.set(0, 0, 1);
+
+  document.getElementById("sub").textContent = "i8 · " + DATA.exhibition.dates;
+  const NODES = new Map(DATA.nodes.map(n => [n.id, n]));
+  const EYE = DATA.eye;
+  const RM = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const sr = document.getElementById("sr");
+  function say(msg) { sr.textContent = ""; setTimeout(() => { sr.textContent = msg; }, 60); }
+  const fmt = v => String(v).replace(".", ",");
+
+  // ---- state
+  let cur = NODES.get(DATA.start) || DATA.nodes[0];
+  let yaw = (cur.look || 90) * Math.PI / 180, pitch = -0.05, fov = 72;
+  let moving = null;     // a walk between viewpoints under way
+  let pending = null;    // a walk waiting for its panorama (the newest request wins)
+  let turning = null;    // an animated turn of the view
+  let drag = null, guide = null, hoverWork = null;
+  const pointers = new Map();
+  const pos = new THREE.Vector3(cur.x, cur.y, EYE);
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+
+  // ---- room proxy: the panoramas are projected onto the room's own walls, floor, ceiling and column, so that
+  // moving between two viewpoints gives real parallax (each fragment samples both panoramas from their centres)
+  const vert = "varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }";
+  const frag = [
+    "precision highp float;",
+    "uniform sampler2D texA; uniform sampler2D texB; uniform vec3 posA; uniform vec3 posB; uniform float t;",
+    "varying vec3 vW; const float PI = 3.141592653589793;",
+    "vec2 uvOf(vec3 d){ d = normalize(d); float az = atan(d.y, d.x); float el = asin(clamp(d.z, -1.0, 1.0));",
+    "  return vec2(fract(0.75 - az / (2.0 * PI)), 0.5 + el / PI); }",
+    "void main(){ vec3 a = texture2D(texA, uvOf(vW - posA)).rgb;",
+    "  if (t <= 0.0) { gl_FragColor = vec4(a, 1.0); return; }",
+    "  vec3 b = texture2D(texB, uvOf(vW - posB)).rgb;",
+    "  gl_FragColor = vec4(mix(a, b, t), 1.0); }"].join("\n");
+  const blank = new THREE.DataTexture(new Uint8Array([40, 40, 40, 255]), 1, 1);
+  const uni = { texA: { value: blank }, texB: { value: blank }, posA: { value: new THREE.Vector3() },
+    posB: { value: new THREE.Vector3() }, t: { value: 0 } };
+  const pmat = new THREE.ShaderMaterial({ uniforms: uni, vertexShader: vert, fragmentShader: frag, side: THREE.DoubleSide });
+  // walls, floors and ceilings of the gallery, the passage and the bookshop, and the column (tour_pack.proxy)
+  const R = DATA.room;
+  const P = [];
+  for (const [x0, y0, x1, y1, z0, z1] of R.proxy.walls) {
+    P.push(x0, y0, z0, x1, y1, z0, x1, y1, z1, x0, y0, z0, x1, y1, z1, x0, y0, z1);
+  }
+  for (const f of R.proxy.floors) {
+    const pts = f.poly.map(p => new THREE.Vector2(p[0], p[1]));
+    for (const tri of THREE.ShapeUtils.triangulateShape(pts, [])) for (const k of tri) P.push(pts[k].x, pts[k].y, f.z);
+  }
+  const pgeo = new THREE.BufferGeometry();
+  pgeo.setAttribute("position", new THREE.Float32BufferAttribute(P, 3));
+  const room = new THREE.Mesh(pgeo, pmat);
+  scene.add(room);
+
+  // ---- textures
+  const loader = new THREE.TextureLoader();
+  const cache = new Map();
+  function prep(tex) {
+    tex.minFilter = THREE.LinearFilter; tex.magFilter = THREE.LinearFilter; tex.generateMipmaps = false;
+    tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return tex;
+  }
+  const HI_KEEP = 4;                    // full-size panoramas kept on the GPU (32 MB each): phones cannot hold 16
+  const hiOrder = [];
+  function load(id, hi) {
+    const key = id + (hi ? "" : "_s");
+    if (!cache.has(key)) {
+      const pr = new Promise((res, rej) => loader.load("panos/" + key + ".jpg", t => res(prep(t)), undefined, rej));
+      pr.catch(() => { if (cache.get(key) === pr) cache.delete(key); });   // a failed load may be retried later
+      cache.set(key, pr);
+    }
+    if (hi) {
+      const i = hiOrder.indexOf(key);
+      if (i >= 0) hiOrder.splice(i, 1);
+      hiOrder.push(key);
+      while (hiOrder.length > HI_KEEP) {
+        const old = hiOrder.shift(), pr = cache.get(old);
+        cache.delete(old);
+        if (pr) pr.then(t => {
+          if (t !== uni.texA.value && t !== uni.texB.value) t.dispose();
+          else { cache.set(old, Promise.resolve(t)); hiOrder.unshift(old); }   // still on screen: keep
+        }, () => {});
+      }
+    }
+    return cache.get(key);
+  }
+  // run fn once nothing moves (uploading a 4096x2048 panorama stalls a phone for a moment)
+  function whenIdle(fn) {
+    if (!moving && !pending && !turning && !(drag && drag.moved > drag.tap)) fn();
+    else setTimeout(() => whenIdle(fn), 120);
+  }
+  // the current viewpoint's small panorama is replaced by the full one once that has arrived
+  function upgrade(n) {
+    load(n.id, true).then(hi => whenIdle(() => {
+      if (cur.id !== n.id || moving || pending) return;
+      renderer.initTexture(hi);
+      uni.texA.value = hi;
+    }), () => {});
+  }
+
+  // ---- floor dots and painting hotspots
+  const dotGroup = new THREE.Group(); scene.add(dotGroup);
+  const ringGeo = new THREE.RingGeometry(0.12, 0.17, 48);
+  const discGeo = new THREE.CircleGeometry(0.12, 48);
+  const dots = new Map();
+  for (const n of DATA.nodes) {
+    const g = new THREE.Group();
+    const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9, depthWrite: false }));
+    const disc = new THREE.Mesh(discGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22, depthWrite: false }));
+    g.add(ring); g.add(disc);
+    g.position.set(n.x, n.y, 0.006);
+    g.userData = { id: n.id }; ring.userData = disc.userData = { node: n.id };
+    g.renderOrder = 2;
+    dotGroup.add(g); dots.set(n.id, g);
+  }
+  const cursor = new THREE.Mesh(new THREE.RingGeometry(0.14, 0.17, 48),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55, depthWrite: false }));
+  cursor.visible = false; cursor.renderOrder = 3; scene.add(cursor);
+
+  const workMeshes = [];
+  const WORKS = new Map(DATA.works.map(w => [w.id, w]));
+  const centre = w => [0, 1, 2].map(k => w.corners.reduce((s, p) => s + p[k], 0) / 4);
+  for (const w of DATA.works) {
+    const c = w.corners;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute([...c[0], ...c[1], ...c[2], ...c[0], ...c[2], ...c[3]], 3));
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
+    m.userData = { work: w.id };
+    const lg = new THREE.BufferGeometry().setFromPoints([...c, c[0]].map(p => new THREE.Vector3(p[0], p[1], p[2])));
+    const outline = new THREE.Line(lg, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 }));
+    outline.visible = false; m.userData.outline = outline;
+    scene.add(m); scene.add(outline); workMeshes.push(m);
+  }
+
+  // ---- view
+  function setView(v) { yaw = v.yaw; pitch = v.pitch; if (v.fov) fov = v.fov; turning = null; }
+  // view = {yaw, pitch, fov}: turn to it over dur ms (shortest way round); at once with reduced motion
+  function turnTo(view, dur) {
+    if (RM()) { setView(view); return; }
+    turning = { y0: yaw, p0: pitch, f0: fov, dy: wrap(view.yaw - yaw), p1: view.pitch, f1: view.fov || fov,
+      t0: performance.now(), dur };
+  }
+  function applyView() {
+    camera.position.copy(pos);
+    camera.fov = fov; camera.updateProjectionMatrix();
+    const d = new THREE.Vector3(Math.cos(pitch) * Math.cos(yaw), Math.cos(pitch) * Math.sin(yaw), Math.sin(pitch));
+    camera.lookAt(pos.clone().add(d));
+  }
+  let dotsSig = "";
+  function updateDots() {
+    dotsSig = "";
+    for (const [id, g] of dots) {
+      g.visible = cur.links.includes(id) && !moving && !pending;
+      dotsSig += g.visible ? "1" : "0";
+    }
+    document.getElementById("here").textContent = cur.name;
+    drawMap();
+  }
+
+  async function arrive(n) {
+    const low = await load(n.id, false);
+    uni.texA.value = low; uni.posA.value.set(n.x, n.y, EYE); uni.t.value = 0;
+    upgrade(n);
+    for (const l of n.links) load(l, false).catch(() => {});
+  }
+  const ease = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  // walk to a viewpoint. opts: view (turn to it on the way), done (called on arrival), run (the guided walk that
+  // asked; the walk is dropped if that run has stopped meanwhile). Resolves to whether the walk started.
+  async function go(id, opts = {}) {
+    if (moving || id === cur.id || (pending && pending.id === id)) return false;
+    const n = NODES.get(id); if (!n) return false;
+    const token = pending = { id, run: opts.run || null };
+    hideHint(); tip.classList.remove("on");
+    if (!opts.view) turning = null;
+    updateDots();
+    // the full panorama if it is already here or comes quickly, else the small one (preloaded for the
+    // neighbours); the full one replaces it on arrival
+    const hi = load(id, true).catch(() => null);
+    const lo = load(id, false).catch(() => null);
+    let texB = await Promise.race([hi, new Promise(r => setTimeout(() => r(null), 350))]);
+    if (!texB) texB = await lo;
+    if (!texB) texB = await hi;
+    const stale = pending !== token || moving || (token.run && token.run !== guide);
+    if (pending === token) pending = null;
+    if (stale || !texB) {
+      updateDots();
+      if (!stale) say("Ekki tókst að hlaða myndinni frá " + n.name + ".");
+      return false;
+    }
+    renderer.initTexture(texB);                     // upload now, not on the first frame of the walk
+    const from = new THREE.Vector3(cur.x, cur.y, EYE), to = new THREE.Vector3(n.x, n.y, EYE);
+    uni.texB.value = texB; uni.posB.value.copy(to);
+    const rm = RM(), dist = from.distanceTo(to);
+    moving = { from: rm ? to.clone() : from, to, t0: performance.now(), dur: rm ? 250 : Math.min(1400, 600 + dist * 180),
+      n, done: opts.done || null, run: token.run };
+    if (opts.view) turnTo(opts.view, moving.dur);
+    updateDots();
+    return true;
+  }
+  let lastSig = "";
+  function step(now) {
+    if (moving) {
+      const k = Math.min(1, Math.max(0, (now - moving.t0) / moving.dur)), e = ease(k);
+      pos.lerpVectors(moving.from, moving.to, e);
+      uni.t.value = e;
+      if (k >= 1) {
+        const n = moving.n, done = moving.done;
+        uni.texA.value = uni.texB.value; uni.posA.value.copy(uni.posB.value); uni.t.value = 0;
+        cur = n; moving = null; updateDots();
+        if (!guide) say("Þú ert við: " + n.name + ".");
+        upgrade(n);
+        for (const l of n.links) load(l, false).catch(() => {});
+        if (done) done();
+      }
+    }
+    if (turning) {
+      const k = Math.min(1, Math.max(0, (now - turning.t0) / turning.dur)), e = ease(k);
+      yaw = turning.y0 + turning.dy * e;
+      pitch = turning.p0 + (turning.p1 - turning.p0) * e;
+      fov = turning.f0 + (turning.f1 - turning.f0) * e;
+      if (k >= 1) turning = null;
+    }
+    // draw only when something changed: a still view costs no GPU time (battery)
+    const sig = [pos.x, pos.y, yaw, pitch, fov, uni.t.value, uni.texA.value.id, uni.texB.value.id, cursor.visible,
+      cursor.position.x, cursor.position.y, cursor.material.opacity, hoverWork ? hoverWork.id : 0, dotsSig,
+      canvas.width, canvas.height].join(",");
+    if (forceRender || sig !== lastSig) {
+      applyView();
+      renderer.render(scene, camera);
+      lastSig = sig; forceRender = false;
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---- input
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  function setNdc(e) {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+  }
+  function pick() {
+    const wall = ray.intersectObject(room)[0];
+    const w = ray.intersectObjects(workMeshes)[0];
+    // the panels stand 2.5-7 cm proud of their walls
+    if (w && (!wall || w.distance < wall.distance + 0.03)) return { work: w.object.userData.work, obj: w.object };
+    const visDots = [...dots.values()].filter(g => g.visible);
+    const d = ray.intersectObjects(visDots, true)[0];
+    if (d) return { node: d.object.userData.node };
+    const p = wall && wall.point.z < 0.01 ? wall.point : null;     // the floor is what the ray hits first
+    if (p) {
+      let best = null, bd = 1.6;
+      for (const id of cur.links) {
+        const n = NODES.get(id), dd = Math.hypot(n.x - p.x, n.y - p.y);
+        if (dd < bd) { bd = dd; best = id; }
+      }
+      return { floor: p, node: best };
+    }
+    return {};
+  }
+  const tip = document.getElementById("tip");
+  function hover(e) {
+    setNdc(e);
+    const h = pick();
+    if (hoverWork && hoverWork !== h.obj) { hoverWork.userData.outline.visible = false; hoverWork = null; }
+    if (h.work) {
+      hoverWork = h.obj; h.obj.userData.outline.visible = true;
+      const w = WORKS.get(h.work);
+      tip.textContent = w.title; tip.style.left = e.clientX + "px"; tip.style.top = e.clientY + "px"; tip.classList.add("on");
+      canvas.classList.add("pointing"); cursor.visible = false; return;
+    }
+    tip.classList.remove("on");
+    if (h.floor && !moving) {
+      cursor.visible = true; cursor.position.set(h.floor.x, h.floor.y, 0.007);
+      canvas.classList.toggle("pointing", !!h.node);
+      cursor.material.opacity = h.node ? 0.75 : 0.3;
+    } else { cursor.visible = false; canvas.classList.remove("pointing"); }
+  }
+  // a tap may roll a little more on a touch screen than a click with a mouse
+  const tapSlop = e => e.pointerType === "mouse" ? 4 : 10;
+  canvas.addEventListener("pointerdown", e => {
+    stopGuide(); turning = null;
+    canvas.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      drag = { pinch: Math.hypot(a.x - b.x, a.y - b.y), fov0: fov, moved: 99, tap: 0 };
+    } else if (pointers.size === 1) {
+      drag = { x: e.clientX, y: e.clientY, yaw0: yaw, pitch0: pitch, moved: 0, tap: tapSlop(e) };
+    }
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (drag && drag.pinch && pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      fov = Math.max(30, Math.min(95, drag.fov0 * drag.pinch / Math.max(20, Math.hypot(a.x - b.x, a.y - b.y))));
+      return;
+    }
+    if (drag && !drag.pinch && pointers.size === 1) {
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
+      if (drag.moved > drag.tap) {
+        canvas.classList.add("dragging"); hideHint(); tip.classList.remove("on");
+        const k = (fov * Math.PI / 180) / canvas.clientHeight;
+        yaw = drag.yaw0 + dx * k;
+        pitch = Math.max(-1.45, Math.min(1.45, drag.pitch0 + dy * k));
+      }
+      return;
+    }
+    if (e.pointerType === "mouse" && !pointers.size) hover(e);
+  });
+  function endPointer(e) {
+    pointers.delete(e.pointerId);
+    canvas.classList.remove("dragging");
+    if (drag && !drag.pinch && drag.moved <= drag.tap && pointers.size === 0) {
+      setNdc(e);
+      const h = pick();
+      if (h.work) openWork(h.work);
+      else if (h.node) go(h.node);
+    }
+    if (pointers.size === 0) drag = null;
+    else if (pointers.size === 1 && drag && drag.pinch) {
+      // the pinch is over but one finger is still down: let it turn the view (and not count as a tap)
+      const [p] = [...pointers.values()];
+      drag = { x: p.x, y: p.y, yaw0: yaw, pitch0: pitch, moved: 99, tap: 0 };
+    }
+  }
+  canvas.addEventListener("pointerup", endPointer);
+  canvas.addEventListener("pointercancel", e => {
+    pointers.delete(e.pointerId); canvas.classList.remove("dragging");
+    if (pointers.size === 0) drag = null;
+  });
+  canvas.addEventListener("pointerleave", () => {
+    cursor.visible = false; tip.classList.remove("on");
+    if (hoverWork) { hoverWork.userData.outline.visible = false; hoverWork = null; }
+  });
+  canvas.addEventListener("wheel", e => {
+    e.preventDefault(); stopGuide(); turning = null;
+    fov = Math.max(30, Math.min(95, fov * Math.exp(e.deltaY * 0.001)));
+  }, { passive: false });
+  canvas.addEventListener("keydown", e => {
+    const s = 0.06;
+    if (e.key === "ArrowLeft") yaw += s; else if (e.key === "ArrowRight") yaw -= s;
+    else if (e.key === "ArrowUp") pitch = Math.min(1.45, pitch + s); else if (e.key === "ArrowDown") pitch = Math.max(-1.45, pitch - s);
+    else if (e.key === "+" || e.key === "=") fov = Math.max(30, fov - 5); else if (e.key === "-") fov = Math.min(95, fov + 5);
+    else if (e.key === "w" || e.key === "W" || e.key === "Enter") { stopGuide(); walkToward(yaw); }
+    else if (e.key === "s" || e.key === "S") { stopGuide(); walkToward(yaw + Math.PI); }
+    else if (e.key === "i" || e.key === "I" || e.key === " ") { stopGuide(); openWorkInView(); }
+    else return;
+    e.preventDefault(); hideHint(); stopGuide(); turning = null;
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && panel.classList.contains("open")) { e.preventDefault(); closeWork(); }
+  });
+
+  // the linked viewpoint closest to a direction (within 45 degrees), nearer ones preferred
+  function walkToward(dir) {
+    let best = null, bs = Infinity;
+    for (const id of cur.links) {
+      const n = NODES.get(id), a = Math.abs(wrap(Math.atan2(n.y - cur.y, n.x - cur.x) - dir));
+      if (a > Math.PI / 4) continue;
+      const score = a * 2 + Math.hypot(n.x - cur.x, n.y - cur.y) * 0.25;
+      if (score < bs) { bs = score; best = id; }
+    }
+    if (best) go(best); else say("Engin stöð í þessa átt.");
+  }
+  // the work in the middle of the view, else the one nearest the view direction that can be seen from here
+  function openWorkInView() {
+    ndc.set(0, 0); ray.setFromCamera(ndc, camera);
+    const h = pick();
+    if (h.work) { openWork(h.work); return; }
+    const dir = new THREE.Vector3(); camera.getWorldDirection(dir);
+    let best = null, ba = (fov * Math.PI / 180) / 2;
+    for (const w of DATA.works) {
+      const c = centre(w), v = new THREE.Vector3(c[0] - pos.x, c[1] - pos.y, c[2] - pos.z);
+      const dist = v.length(); v.normalize();
+      const a = Math.acos(Math.max(-1, Math.min(1, v.dot(dir))));
+      if (a >= ba) continue;
+      ray.set(pos, v);
+      const hit = ray.intersectObject(room)[0];
+      if (hit && hit.distance < dist - 0.1) continue;           // behind the column or a wall
+      ba = a; best = w.id;
+    }
+    if (best) openWork(best); else say("Ekkert verk er fyrir framan þig.");
+  }
+
+  // ---- hint, fullscreen, panel
+  const hint = document.getElementById("hint");
+  if (window.matchMedia && matchMedia("(pointer: coarse)").matches) hint.textContent = hint.textContent.replace("Smelltu", "Ýttu");
+  let hintTimer = setTimeout(hideHint, 12000);
+  function hideHint() { hint.classList.add("gone"); clearTimeout(hintTimer); }
+  const fsBtn = document.getElementById("fs");
+  // iPhone Safari has no element fullscreen: hide the button rather than offer one that does nothing
+  if (!document.documentElement.requestFullscreen) fsBtn.hidden = true;
+  fsBtn.addEventListener("click", () => {
+    const el = document.documentElement;
+    if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+  });
+  document.addEventListener("fullscreenchange", () => {
+    fsBtn.textContent = document.fullscreenElement ? "Hætta í öllum skjánum" : "Allur skjárinn";
+  });
+  const panel = document.getElementById("panel"), pbody = document.getElementById("pbody");
+  let lastFocus = null;
+  function openWork(id) {
+    const w = WORKS.get(id), E = DATA.exhibition;
+    if (!w) return;
+    if (!panel.classList.contains("open")) lastFocus = document.activeElement;
+    pbody.innerHTML = "";
+    if (w.img) {
+      const img = document.createElement("img");
+      img.src = "works/" + id + ".jpg"; img.alt = `Verkið „${w.title}“ eftir ${E.artist}, séð beint að framan`;
+      img.onerror = () => img.remove();
+      pbody.append(img);
+    }
+    const h = document.createElement("h2"); h.id = "ptitle"; h.textContent = w.title;
+    const dl = document.createElement("dl");
+    const rows = [["Listamaður", E.artist], ["Ár", String(w.year)], ["Efni", E.medium],
+      ["Stærð (h × b × d)", `${fmt(w.h)} × ${fmt(w.w)} × ${fmt(w.d)} cm`], ["Staður", E.place]];
+    for (const [k, v] of rows) { const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = v; dl.append(dt, dd); }
+    const a = document.createElement("a"); a.href = w.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Verkið á vef i8";
+    pbody.append(h, dl, a);
+    panel.classList.add("open"); panel.setAttribute("aria-hidden", "false");
+    document.getElementById("close").focus({ preventScroll: true });
+  }
+  function closeWork() {
+    if (!panel.classList.contains("open")) return;
+    const inside = panel.contains(document.activeElement);
+    panel.classList.remove("open"); panel.setAttribute("aria-hidden", "true");
+    if (inside) {
+      const back = lastFocus && lastFocus !== document.body && document.contains(lastFocus) ? lastFocus : canvas;
+      back.focus({ preventScroll: true });
+    }
+  }
+  document.getElementById("close").addEventListener("click", closeWork);
+
+  // ---- floor plan: built once; the dots and the works are buttons (click, or Tab and Enter)
+  const svg = document.getElementById("mapsvg");
+  const xs = R.outline.map(p => p[0]), ys = R.outline.map(p => p[1]);
+  const minx = Math.min(...xs) - 0.3, maxx = Math.max(...xs) + 0.3, maxy = Math.max(...ys) + 0.3, miny = Math.min(...ys) - 0.3;
+  const sc = 100 / (maxx - minx), H = (maxy - miny) * sc;
+  svg.setAttribute("viewBox", `0 0 100 ${H.toFixed(1)}`);
+  const X = x => (x - minx) * sc, Y = y => (maxy - y) * sc;
+  const f2 = v => v.toFixed(2);
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  (function buildMap() {
+    const c = R.column;
+    svg.append(el("polygon", { points: R.outline.map(p => f2(X(p[0])) + "," + f2(Y(p[1]))).join(" "), fill: "rgba(255,255,255,.06)", stroke: "rgba(255,255,255,.55)", "stroke-width": ".8" }));
+    svg.append(el("line", { x1: f2(X(R.passage[0])), y1: f2(Y(R.outline[0][1])), x2: f2(X(R.passage[1])), y2: f2(Y(R.outline[0][1])), stroke: "#161818", "stroke-width": "1.6" }));
+    svg.append(el("rect", { x: f2(X(c[0])), y: f2(Y(c[4])), width: f2((c[3] - c[0]) * sc), height: f2((c[4] - c[1]) * sc), fill: "rgba(255,255,255,.35)" }));
+    for (const w of DATA.works) {
+      const a = w.corners[0], b = w.corners[1];
+      const g = el("g", { class: "work", "data-work": w.id, tabindex: "0", role: "button", "aria-label": `Verkið „${w.title}“` });
+      g.append(el("line", { x1: f2(X(a[0])), y1: f2(Y(a[1])), x2: f2(X(b[0])), y2: f2(Y(b[1])), stroke: "transparent", "stroke-width": "7" }));
+      g.append(el("line", { x1: f2(X(a[0])), y1: f2(Y(a[1])), x2: f2(X(b[0])), y2: f2(Y(b[1])), stroke: "#f3e6d6", "stroke-width": "2.2" }));
+      const t = el("title", {}); t.textContent = w.title; g.append(t);
+      svg.append(g);
+    }
+    svg.append(el("path", { id: "cone", fill: "rgba(243,230,214,.35)" }));
+    for (const n of DATA.nodes) {
+      const d = el("circle", { class: "dot", "data-id": n.id, cx: f2(X(n.x)), cy: f2(Y(n.y)), r: 2, fill: "rgba(255,255,255,.75)", stroke: "#111",
+        "stroke-width": ".5", tabindex: "0", role: "button", "aria-label": "Ganga að: " + n.name });
+      const t = el("title", {}); t.textContent = n.name; d.append(t);
+      svg.append(d);
+    }
+    svg.append(el("circle", { id: "ring", class: "ring", r: 4.2, cx: -10, cy: -10, visibility: "hidden" }));
+  })();
+  const cone = svg.querySelector("#cone"), ring = svg.querySelector("#ring");
+  function drawMap() {
+    const a0 = yaw, fw = (fov * Math.PI / 180) * 0.6, r = 9;
+    const cx = cur.x, cy = cur.y;
+    const p1 = [cx + Math.cos(a0 + fw) * r / sc, cy + Math.sin(a0 + fw) * r / sc], p2 = [cx + Math.cos(a0 - fw) * r / sc, cy + Math.sin(a0 - fw) * r / sc];
+    cone.setAttribute("d", `M${f2(X(cx))},${f2(Y(cy))} L${f2(X(p1[0]))},${f2(Y(p1[1]))} L${f2(X(p2[0]))},${f2(Y(p2[1]))} Z`);
+    for (const c of svg.querySelectorAll("circle.dot")) {
+      const on = c.getAttribute("data-id") === cur.id;
+      c.setAttribute("r", on ? 2.6 : 2);
+      c.setAttribute("fill", on ? "#f3e6d6" : "rgba(255,255,255,.75)");
+      if (on) c.setAttribute("aria-current", "location"); else c.removeAttribute("aria-current");
+    }
+  }
+  // walk to a work: to the viewpoint the guided walk uses for it, turned to frame it, then its information
+  function showWork(id) {
+    stopGuide();
+    const st = (DATA.guided || []).find(s => s.work === id);
+    if (!st || !NODES.has(st.node)) { openWork(id); return; }
+    const view = viewOf(st);
+    if (st.node === cur.id) { turnTo(view, 900); setTimeout(() => openWork(id), RM() ? 0 : 900); }
+    else go(st.node, { view, done: () => openWork(id) }).then(ok => { if (!ok && !moving && !pending) openWork(id); });
+  }
+  // a click picks the nearest viewpoint within 14 px (the dots are small and close together on a phone)
+  svg.addEventListener("click", e => {
+    const wg = e.target.closest && e.target.closest(".work");
+    if (wg) { showWork(wg.getAttribute("data-work")); return; }
+    const r = svg.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width * 100, py = (e.clientY - r.top) / r.height * H;
+    let best = null, bd = 14 / (r.width / 100);
+    for (const n of DATA.nodes) {
+      const d = Math.hypot(X(n.x) - px, Y(n.y) - py);
+      if (d < bd) { bd = d; best = n.id; }
+    }
+    if (best) { stopGuide(); go(best); }
+  });
+  svg.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const wg = e.target.closest && e.target.closest(".work");
+    const id = e.target.getAttribute && e.target.getAttribute("data-id");
+    if (wg) { e.preventDefault(); showWork(wg.getAttribute("data-work")); }
+    else if (id) { e.preventDefault(); stopGuide(); go(id); }
+  });
+  svg.addEventListener("focusin", e => {
+    const t = e.target;
+    if (t.classList && t.classList.contains("dot")) {
+      ring.setAttribute("cx", t.getAttribute("cx")); ring.setAttribute("cy", t.getAttribute("cy"));
+      ring.setAttribute("visibility", "visible");
+    } else if (t.classList && t.classList.contains("work")) {
+      t.querySelector("line:last-of-type").setAttribute("stroke-width", "4");
+    }
+  });
+  svg.addEventListener("focusout", e => {
+    ring.setAttribute("visibility", "hidden");
+    const t = e.target;
+    if (t.classList && t.classList.contains("work")) t.querySelector("line:last-of-type").setAttribute("stroke-width", "2.2");
+  });
+  let lastMap = "";
+  setInterval(() => {
+    const k = `${yaw.toFixed(2)},${fov.toFixed(0)},${cur.id}`;
+    if (k !== lastMap) { lastMap = k; drawMap(); }
+  }, 120);
+  const mapBox = document.getElementById("map"), mapToggle = document.getElementById("mapToggle");
+  mapToggle.addEventListener("click", () => {
+    const closed = mapBox.classList.toggle("closed");
+    mapToggle.textContent = closed ? "+" : "–";
+    mapToggle.setAttribute("aria-expanded", String(!closed));
+    mapToggle.setAttribute("aria-label", closed ? "Sýna grunnmynd" : "Fela grunnmynd");
+  });
+
+  // ---- guided walk: viewpoint to viewpoint, turning to each work (survey/tour.json -> guided)
+  const guideBtn = document.getElementById("guide"), caption = document.getElementById("caption");
+  function viewOf(st) {
+    const n = NODES.get(st.node);
+    if (!st.work) return { yaw: (st.look_deg ?? n.look ?? 90) * Math.PI / 180, pitch: -0.05, fov: 72 };
+    const w = WORKS.get(st.work), c = centre(w);
+    const dx = c[0] - n.x, dy = c[1] - n.y, dz = c[2] - EYE, dh = Math.hypot(dx, dy), d = Math.hypot(dh, dz);
+    // the work at about half the screen height and at most 80 % of its width, whatever the screen's shape
+    const aspect = Math.max(0.3, canvas.clientWidth / Math.max(1, canvas.clientHeight));
+    const vh = 2 * Math.atan(w.h / 100 / 0.5 / 2 / d);
+    const hw = 2 * Math.atan(w.w / 100 / 0.8 / 2 / d);
+    const vw = 2 * Math.atan(Math.tan(hw / 2) / aspect);
+    const f = Math.max(vh, vw) * 180 / Math.PI;
+    return { yaw: Math.atan2(dy, dx), pitch: Math.atan2(dz, dh), fov: Math.max(34, Math.min(95, f)) };
+  }
+  function showCaption(st) {
+    caption.innerHTML = "";
+    if (st.work) {
+      const w = WORKS.get(st.work);
+      const t = document.createElement("div"); t.className = "ct"; t.textContent = w.title;
+      const m = document.createElement("div"); m.className = "cm";
+      m.textContent = `${DATA.exhibition.artist}, ${w.year} · ${fmt(w.h)} × ${fmt(w.w)} cm`;
+      const b = document.createElement("button"); b.type = "button"; b.textContent = "Nánar";
+      b.setAttribute("aria-label", `Nánar um verkið „${w.title}“`);
+      b.addEventListener("click", () => { stopGuide(); openWork(w.id); });
+      caption.append(t, m, b);
+    } else {
+      const t = document.createElement("div"); t.className = "cm"; t.textContent = NODES.get(st.node).name;
+      caption.append(t);
+    }
+    caption.classList.add("on");
+  }
+  // every callback of a run checks that its run is still the current one (a stop and a restart start a new run)
+  function arm(g) {
+    clearTimeout(g.timer);
+    if (!g.paused && g.next) g.timer = setTimeout(() => { if (guide === g) g.next(); }, g.hold);
+  }
+  function guideStep(g, i) {
+    if (guide !== g) return;
+    const st = DATA.guided[i];
+    if (!st) { stopGuide(); say("Leiðsögn lokið."); return; }
+    g.i = i; g.next = null;
+    caption.classList.remove("on");
+    const view = viewOf(st);
+    const settle = () => {
+      if (guide !== g) return;
+      showCaption(st);
+      const next = DATA.guided[i + 1];
+      if (next) load(next.node, true).catch(() => {});
+      g.next = () => guideStep(g, i + 1);
+      g.hold = st.work ? 6500 : 4000;
+      arm(g);
+    };
+    if (st.node !== cur.id) {
+      go(st.node, { view, done: settle, run: g }).then(ok => { if (!ok && guide === g && !moving && !pending) stopGuide(); });
+    } else {
+      turnTo(view, 1500);
+      clearTimeout(g.timer);
+      g.timer = setTimeout(settle, RM() ? 100 : 1500);
+    }
+  }
+  function startGuide() {
+    if (!DATA.guided || !DATA.guided.length) return;
+    closeWork(); hideHint();
+    const g = guide = { i: 0, timer: null, paused: false, next: null, hold: 0 };
+    guideBtn.textContent = "Stöðva leiðsögn";
+    document.body.classList.add("guiding");
+    whenIdle(() => {           // a walk already under way ends first
+      if (guide !== g) return;
+      let k = DATA.guided.findIndex(st => st.node === cur.id);
+      if (k < 0) k = DATA.guided.findIndex(st => cur.links.includes(st.node));
+      guideStep(g, Math.max(0, k));
+    });
+  }
+  function stopGuide() {
+    if (!guide) return;
+    const g = guide;
+    clearTimeout(g.timer); guide = null;
+    if (moving && moving.run === g) moving.done = null;
+    caption.classList.remove("on");
+    guideBtn.textContent = "Leiðsögn";
+    document.body.classList.remove("guiding");
+  }
+  // reading the caption (or tabbing to 'Nánar') holds the walk; leaving it goes on after a short pause
+  caption.addEventListener("focusin", () => { if (guide) { guide.paused = true; clearTimeout(guide.timer); } });
+  caption.addEventListener("focusout", () => { if (guide) { guide.paused = false; guide.hold = 3000; arm(guide); } });
+  guideBtn.addEventListener("click", () => guide ? stopGuide() : startGuide());
+  if (!DATA.guided || !DATA.guided.length) guideBtn.hidden = true;
+
+  // ---- start
+  function resize() {
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    forceRender = true;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+  updateDots();
+  arrive(cur).then(() => {
+    loadingEl.classList.add("done");
+    forceRender = true;
+  }).catch(() => fatal("Ekki tókst að hlaða myndunum."));
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
