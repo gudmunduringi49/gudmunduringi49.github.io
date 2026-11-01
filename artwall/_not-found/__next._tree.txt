@@ -1,4 +1,4 @@
-:HL["/artwall/_next/static/chunks/1bw_o1k-hgw95.css","style"]
+:HL["/artwall/_next/static/chunks/1t52ln97ekvpj.css","style"]
 2:[["children",{"s":"__PAGE__","h":160}]]
 1:[["children",{"s":"/_not-found","h":96,"c":"$Q2"}]]
-0:{"b":"sGwc02_TGLfSDJ__2BxYC","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"gH00lo7YBGFXTpE2V96uR","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
