@@ -1,0 +1,243 @@
+{
+ "generator": "artwall-asset-worker",
+ "works": [
+  {
+   "slug": "calibration-target",
+   "title": "Calibration target",
+   "artist": "ArtWall demo",
+   "year": "2026",
+   "medium": "Printed test chart (ArtWall original)",
+   "availability": "not_for_sale",
+   "mode": "artwork_only",
+   "measurements": {
+    "artwork": {
+     "widthMm": 800.0,
+     "heightMm": 600.0
+    },
+    "outer": null,
+    "depthMm": 25.0,
+    "depthIsEstimate": false
+   },
+   "frame": null,
+   "notes": "Check locked scale with a tape measure: the black square is 10 × 10 cm. Corner colours reveal mirroring.",
+   "manifestHash": "adc7e2452f84a9886d63cd58821bf6a5ca114a3390a474dc3b0a755656f97cd7",
+   "texture": {
+    "width": 2048,
+    "height": 1536
+   },
+   "files": [
+    "manifest.json",
+    "model-scene-library.usdz",
+    "model-unanchored.usdz",
+    "model-vertical.usdz",
+    "model.glb",
+    "model.usdz",
+    "poster.jpg",
+    "texture.jpg",
+    "thumb.jpg"
+   ],
+   "bytes": {
+    "texture.jpg": 155746,
+    "poster.jpg": 100022,
+    "thumb.jpg": 17193,
+    "model.glb": 160172,
+    "model.usdz": 159954,
+    "model-vertical.usdz": 159954,
+    "model-scene-library.usdz": 160074,
+    "model-unanchored.usdz": 159713,
+    "manifest.json": 1371
+   },
+   "diagnosticVariants": true
+  },
+  {
+   "slug": "harbour-light",
+   "title": "Harbour light",
+   "artist": "ArtWall demo",
+   "year": "2026",
+   "medium": "Generated study, oil-like colour fields on canvas (demo)",
+   "availability": "available",
+   "mode": "artwork_only",
+   "measurements": {
+    "artwork": {
+     "widthMm": 1200.0,
+     "heightMm": 900.0
+    },
+    "outer": null,
+    "depthMm": 40.0,
+    "depthIsEstimate": false
+   },
+   "frame": null,
+   "notes": "Unframed canvas; the sides repeat the painting's edge colour.",
+   "manifestHash": "56a8a61483b37d22faf7a86a1526d6068a033ebd7ff6922bf3363b86a5fc979e",
+   "texture": {
+    "width": 2048,
+    "height": 1536
+   },
+   "files": [
+    "manifest.json",
+    "model.glb",
+    "model.usdz",
+    "poster.jpg",
+    "texture.jpg",
+    "thumb.jpg"
+   ],
+   "bytes": {
+    "texture.jpg": 248590,
+    "poster.jpg": 148192,
+    "thumb.jpg": 18918,
+    "model.glb": 253080,
+    "model.usdz": 252881,
+    "manifest.json": 1371
+   },
+   "diagnosticVariants": false
+  },
+  {
+   "slug": "night-study",
+   "title": "Night study",
+   "artist": "ArtWall demo",
+   "year": "2026",
+   "medium": "Generated dark study (demo)",
+   "availability": "reserved",
+   "mode": "artwork_only",
+   "measurements": {
+    "artwork": {
+     "widthMm": 500.0,
+     "heightMm": 700.0
+    },
+    "outer": {
+     "widthMm": 690.0,
+     "heightMm": 900.0
+    },
+    "depthMm": 32.0,
+    "depthIsEstimate": true
+   },
+   "frame": {
+    "kind": "procedural",
+    "bordersMm": {
+     "top": 35.0,
+     "right": 35.0,
+     "bottom": 35.0,
+     "left": 35.0
+    },
+    "mat": {
+     "bordersMm": {
+      "top": 60.0,
+      "right": 60.0,
+      "bottom": 70.0,
+      "left": 60.0
+     }
+    }
+   },
+   "notes": "Dark work with a simple drawn frame and mat (visualisation; the drawn frame is not the object for sale).",
+   "manifestHash": "6ab45be6275fc3584d149d088d1233ffb29949bb8acfe6571b7e179055bf9d5c",
+   "texture": {
+    "width": 1463,
+    "height": 2048
+   },
+   "files": [
+    "manifest.json",
+    "model.glb",
+    "model.usdz",
+    "poster.jpg",
+    "texture.jpg",
+    "thumb.jpg"
+   ],
+   "bytes": {
+    "texture.jpg": 236498,
+    "poster.jpg": 140832,
+    "thumb.jpg": 17849,
+    "model.glb": 243624,
+    "model.usdz": 242555,
+    "manifest.json": 1638
+   },
+   "diagnosticVariants": false
+  },
+  {
+   "slug": "small-blue",
+   "title": "Small blue",
+   "artist": "ArtWall demo",
+   "year": "2025",
+   "medium": "Generated study in a wooden frame (demo)",
+   "availability": "sold",
+   "mode": "frame_included",
+   "measurements": {
+    "artwork": {
+     "widthMm": 210.0,
+     "heightMm": 265.0
+    },
+    "outer": {
+     "widthMm": 290.0,
+     "heightMm": 345.0
+    },
+    "depthMm": 30.0,
+    "depthIsEstimate": false
+   },
+   "frame": null,
+   "notes": "Photographed frame: the frame is part of the image; its sides are approximated.",
+   "manifestHash": "1eace58238b07a28875c597b6f738f2c53f398075bd0bc5f4abcdc7aeb6f8f20",
+   "texture": {
+    "width": 870,
+    "height": 1035
+   },
+   "files": [
+    "manifest.json",
+    "model.glb",
+    "model.usdz",
+    "poster.jpg",
+    "texture.jpg",
+    "thumb.jpg"
+   ],
+   "bytes": {
+    "texture.jpg": 118639,
+    "poster.jpg": 92102,
+    "thumb.jpg": 18692,
+    "model.glb": 123132,
+    "model.usdz": 122930,
+    "manifest.json": 1415
+   },
+   "diagnosticVariants": false
+  },
+  {
+   "slug": "large-field",
+   "title": "Large field",
+   "artist": "ArtWall demo",
+   "year": "2026",
+   "medium": "Generated colour field on canvas (demo)",
+   "availability": "available",
+   "mode": "artwork_only",
+   "measurements": {
+    "artwork": {
+     "widthMm": 1800.0,
+     "heightMm": 1400.0
+    },
+    "outer": null,
+    "depthMm": 45.0,
+    "depthIsEstimate": false
+   },
+   "frame": null,
+   "notes": "Large canvas: stand back from the wall to fit it in view.",
+   "manifestHash": "0711d312b542638b3ffd469c620a73d7f962f07aafd32be7afcc42538182b4b8",
+   "texture": {
+    "width": 2048,
+    "height": 1593
+   },
+   "files": [
+    "manifest.json",
+    "model.glb",
+    "model.usdz",
+    "poster.jpg",
+    "texture.jpg",
+    "thumb.jpg"
+   ],
+   "bytes": {
+    "texture.jpg": 256358,
+    "poster.jpg": 152692,
+    "thumb.jpg": 19335,
+    "model.glb": 260836,
+    "model.usdz": 260649,
+    "manifest.json": 1366
+   },
+   "diagnosticVariants": false
+  }
+ ]
+}

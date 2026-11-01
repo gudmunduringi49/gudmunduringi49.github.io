@@ -1,0 +1,103 @@
+{
+ "schema": "artwall.scene-manifest",
+ "schemaVersion": 1,
+ "generator": {
+  "name": "artwall-asset-worker",
+  "version": "0.1.0"
+ },
+ "artwork": {
+  "id": "demo-night-study",
+  "versionId": null,
+  "versionNumber": 1,
+  "title": "Night study",
+  "artist": "ArtWall demo"
+ },
+ "source": {
+  "sha256": "01a52627e4cbb52919f169b99f422dd63fcf61aa9409d57a25b989ff0248b948",
+  "widthPx": 1500,
+  "heightPx": 2100,
+  "exifOrientation": 1,
+  "colorProfile": "untagged (assumed sRGB)"
+ },
+ "capture": {
+  "mode": "artwork_only",
+  "corners": {
+   "space": "upright-normalized",
+   "tl": [
+    0,
+    0
+   ],
+   "tr": [
+    1,
+    0
+   ],
+   "br": [
+    1,
+    1
+   ],
+   "bl": [
+    0,
+    1
+   ]
+  }
+ },
+ "measurements": {
+  "artwork": {
+   "widthMm": 500.0,
+   "heightMm": 700.0
+  },
+  "outer": {
+   "widthMm": 690.0,
+   "heightMm": 900.0
+  },
+  "depthMm": 32.0,
+  "depthIsEstimate": true
+ },
+ "frame": {
+  "kind": "procedural",
+  "bordersMm": {
+   "top": 35.0,
+   "right": 35.0,
+   "bottom": 35.0,
+   "left": 35.0
+  },
+  "mat": {
+   "bordersMm": {
+    "top": 60.0,
+    "right": 60.0,
+    "bottom": 70.0,
+    "left": 60.0
+   }
+  }
+ },
+ "edgeStyle": "texture-edge",
+ "texture": {
+  "sha256": "4192347acedd3c303f881ae832543f117362bf53fee697afaed46858576b66af",
+  "widthPx": 1463,
+  "heightPx": 2048,
+  "colorSpace": "sRGB"
+ },
+ "materials": {
+  "frameColor": "#141414",
+  "matColor": "#f4f2ec"
+ },
+ "scene": {
+  "units": "m",
+  "upAxis": "Y",
+  "front": "+Z",
+  "origin": "back-plane-center",
+  "wallOffsetM": 0.001,
+  "expectedBounds": {
+   "min": [
+    -0.345,
+    -0.45,
+    0.001
+   ],
+   "max": [
+    0.345,
+    0.45,
+    0.033
+   ]
+  }
+ }
+}

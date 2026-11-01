@@ -1,0 +1,478 @@
+{
+ "ok": true,
+ "glb": {
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "checks": {
+   "bytes": 160172,
+   "bounds": {
+    "world": [
+     [
+      -0.4000000059604645,
+      -0.30000001192092896,
+      0.0010000000474974513
+     ],
+     [
+      0.4000000059604645,
+      0.30000001192092896,
+      0.026000000536441803
+     ]
+    ],
+    "expected": {
+     "min": [
+      -0.4,
+      -0.3,
+      0.001
+     ],
+     "max": [
+      0.4,
+      0.3,
+      0.026
+     ]
+    }
+   },
+   "uvOrientation": {
+    "topLeftUv": [
+     0.0,
+     0.0
+    ],
+    "bottomRightUv": [
+     1.0,
+     1.0
+    ]
+   }
+  }
+ },
+ "usdz": {
+  "model.usdz": {
+   "ok": true,
+   "errors": [],
+   "warnings": [],
+   "checks": {
+    "bytes": 159954,
+    "files": [
+     "model.usdc",
+     "0/texture.jpg"
+    ],
+    "zip": "stored, aligned",
+    "stage": {
+     "metersPerUnit": 1.0,
+     "metersPerUnitAuthored": true,
+     "upAxis": "Y",
+     "defaultPrim": "/ArtWall"
+    },
+    "anchoring": {
+     "expected": "vertical",
+     "apiSchemas": [
+      "Preliminary_AnchoringAPI"
+     ],
+     "type": "plane",
+     "alignment": "vertical"
+    },
+    "bounds": {
+     "canonical": [
+      [
+       -0.4000000059604645,
+       -0.30000001192092896,
+       0.0010000000474973182
+      ],
+      [
+       0.4000000059604645,
+       0.30000001192092896,
+       0.026000000536441935
+      ]
+     ],
+     "world": [
+      [
+       -0.4000000059604645,
+       0.0010000000474973847,
+       -0.30000001192092896
+      ],
+      [
+       0.4000000059604645,
+       0.02600000053644187,
+       0.30000001192092896
+      ]
+     ],
+     "expected": {
+      "min": [
+       -0.4,
+       -0.3,
+       0.001
+      ],
+      "max": [
+       0.4,
+       0.3,
+       0.026
+      ]
+     },
+     "expectedAnchorSpace": {
+      "min": [
+       -0.4,
+       0.001,
+       -0.3
+      ],
+      "max": [
+       0.4,
+       0.026,
+       0.3
+      ]
+     }
+    },
+    "uvOrientation": {
+     "topLeftSt": [
+      0.0,
+      1.0
+     ],
+     "bottomRightSt": [
+      1.0,
+      0.0
+     ],
+     "frontNormalPlusZ": true
+    },
+    "textures": [
+     {
+      "path": "0/texture.jpg",
+      "resolved": "/tmp/artwall-build-hs0_z15f/model.usdz[0/texture.jpg]"
+     }
+    ],
+    "usdValidators": {
+     "ran": [
+      "usdGeomValidators:StageMetadataChecker",
+      "usdShadeValidators:MaterialBindingApiAppliedValidator",
+      "usdShadeValidators:MaterialBindingRelationships",
+      "usdShadeValidators:ShaderSdrCompliance",
+      "usdShadeValidators:EncapsulationRulesValidator",
+      "usdUtilsValidators:UsdzPackageValidator",
+      "usdUtilsValidators:FileExtensionValidator",
+      "usdUtilsValidators:MissingReferenceValidator",
+      "usdUtilsValidators:RootPackageValidator",
+      "usdUtilsValidators:PackageEncapsulationValidator",
+      "usdValidation:CompositionErrorTest",
+      "usdValidation:AttributeTypeMismatch"
+     ],
+     "findings": []
+    }
+   }
+  },
+  "model-vertical.usdz": {
+   "ok": true,
+   "errors": [],
+   "warnings": [],
+   "checks": {
+    "bytes": 159954,
+    "files": [
+     "model.usdc",
+     "0/texture.jpg"
+    ],
+    "zip": "stored, aligned",
+    "stage": {
+     "metersPerUnit": 1.0,
+     "metersPerUnitAuthored": true,
+     "upAxis": "Y",
+     "defaultPrim": "/ArtWall"
+    },
+    "anchoring": {
+     "expected": "vertical",
+     "apiSchemas": [
+      "Preliminary_AnchoringAPI"
+     ],
+     "type": "plane",
+     "alignment": "vertical"
+    },
+    "bounds": {
+     "canonical": [
+      [
+       -0.4000000059604645,
+       -0.30000001192092896,
+       0.0010000000474973182
+      ],
+      [
+       0.4000000059604645,
+       0.30000001192092896,
+       0.026000000536441935
+      ]
+     ],
+     "world": [
+      [
+       -0.4000000059604645,
+       0.0010000000474973847,
+       -0.30000001192092896
+      ],
+      [
+       0.4000000059604645,
+       0.02600000053644187,
+       0.30000001192092896
+      ]
+     ],
+     "expected": {
+      "min": [
+       -0.4,
+       -0.3,
+       0.001
+      ],
+      "max": [
+       0.4,
+       0.3,
+       0.026
+      ]
+     },
+     "expectedAnchorSpace": {
+      "min": [
+       -0.4,
+       0.001,
+       -0.3
+      ],
+      "max": [
+       0.4,
+       0.026,
+       0.3
+      ]
+     }
+    },
+    "uvOrientation": {
+     "topLeftSt": [
+      0.0,
+      1.0
+     ],
+     "bottomRightSt": [
+      1.0,
+      0.0
+     ],
+     "frontNormalPlusZ": true
+    },
+    "textures": [
+     {
+      "path": "0/texture.jpg",
+      "resolved": "/tmp/artwall-build-hs0_z15f/model-vertical.usdz[0/texture.jpg]"
+     }
+    ],
+    "usdValidators": {
+     "ran": [
+      "usdGeomValidators:StageMetadataChecker",
+      "usdShadeValidators:MaterialBindingApiAppliedValidator",
+      "usdShadeValidators:MaterialBindingRelationships",
+      "usdShadeValidators:ShaderSdrCompliance",
+      "usdShadeValidators:EncapsulationRulesValidator",
+      "usdUtilsValidators:UsdzPackageValidator",
+      "usdUtilsValidators:FileExtensionValidator",
+      "usdUtilsValidators:MissingReferenceValidator",
+      "usdUtilsValidators:RootPackageValidator",
+      "usdUtilsValidators:PackageEncapsulationValidator",
+      "usdValidation:CompositionErrorTest",
+      "usdValidation:AttributeTypeMismatch"
+     ],
+     "findings": []
+    }
+   }
+  },
+  "model-scene-library.usdz": {
+   "ok": true,
+   "errors": [],
+   "warnings": [],
+   "checks": {
+    "bytes": 160074,
+    "files": [
+     "model.usdc",
+     "0/texture.jpg"
+    ],
+    "zip": "stored, aligned",
+    "stage": {
+     "metersPerUnit": 1.0,
+     "metersPerUnitAuthored": true,
+     "upAxis": "Y",
+     "defaultPrim": "/Root"
+    },
+    "anchoring": {
+     "expected": "scene-library",
+     "apiSchemas": [],
+     "type": "plane",
+     "alignment": "vertical"
+    },
+    "bounds": {
+     "canonical": [
+      [
+       -0.4000000059604645,
+       -0.30000001192092896,
+       0.0010000000474973182
+      ],
+      [
+       0.4000000059604645,
+       0.30000001192092896,
+       0.026000000536441935
+      ]
+     ],
+     "world": [
+      [
+       -0.4000000059604645,
+       0.0010000000474973847,
+       -0.30000001192092896
+      ],
+      [
+       0.4000000059604645,
+       0.02600000053644187,
+       0.30000001192092896
+      ]
+     ],
+     "expected": {
+      "min": [
+       -0.4,
+       -0.3,
+       0.001
+      ],
+      "max": [
+       0.4,
+       0.3,
+       0.026
+      ]
+     },
+     "expectedAnchorSpace": {
+      "min": [
+       -0.4,
+       0.001,
+       -0.3
+      ],
+      "max": [
+       0.4,
+       0.026,
+       0.3
+      ]
+     }
+    },
+    "uvOrientation": {
+     "topLeftSt": [
+      0.0,
+      1.0
+     ],
+     "bottomRightSt": [
+      1.0,
+      0.0
+     ],
+     "frontNormalPlusZ": true
+    },
+    "textures": [
+     {
+      "path": "0/texture.jpg",
+      "resolved": "/tmp/artwall-build-hs0_z15f/model-scene-library.usdz[0/texture.jpg]"
+     }
+    ],
+    "usdValidators": {
+     "ran": [
+      "usdGeomValidators:StageMetadataChecker",
+      "usdShadeValidators:MaterialBindingApiAppliedValidator",
+      "usdShadeValidators:MaterialBindingRelationships",
+      "usdShadeValidators:ShaderSdrCompliance",
+      "usdShadeValidators:EncapsulationRulesValidator",
+      "usdUtilsValidators:UsdzPackageValidator",
+      "usdUtilsValidators:FileExtensionValidator",
+      "usdUtilsValidators:MissingReferenceValidator",
+      "usdUtilsValidators:RootPackageValidator",
+      "usdUtilsValidators:PackageEncapsulationValidator",
+      "usdValidation:CompositionErrorTest",
+      "usdValidation:AttributeTypeMismatch"
+     ],
+     "findings": []
+    }
+   }
+  },
+  "model-unanchored.usdz": {
+   "ok": true,
+   "errors": [],
+   "warnings": [],
+   "checks": {
+    "bytes": 159713,
+    "files": [
+     "model.usdc",
+     "0/texture.jpg"
+    ],
+    "zip": "stored, aligned",
+    "stage": {
+     "metersPerUnit": 1.0,
+     "metersPerUnitAuthored": true,
+     "upAxis": "Y",
+     "defaultPrim": "/ArtWall"
+    },
+    "anchoring": {
+     "expected": "none",
+     "apiSchemas": [],
+     "type": null,
+     "alignment": null
+    },
+    "bounds": {
+     "canonical": [
+      [
+       -0.4000000059604645,
+       -0.30000001192092896,
+       0.0010000000474974513
+      ],
+      [
+       0.4000000059604645,
+       0.30000001192092896,
+       0.026000000536441803
+      ]
+     ],
+     "world": [
+      [
+       -0.4000000059604645,
+       -0.30000001192092896,
+       0.0010000000474974513
+      ],
+      [
+       0.4000000059604645,
+       0.30000001192092896,
+       0.026000000536441803
+      ]
+     ],
+     "expected": {
+      "min": [
+       -0.4,
+       -0.3,
+       0.001
+      ],
+      "max": [
+       0.4,
+       0.3,
+       0.026
+      ]
+     }
+    },
+    "uvOrientation": {
+     "topLeftSt": [
+      0.0,
+      1.0
+     ],
+     "bottomRightSt": [
+      1.0,
+      0.0
+     ],
+     "frontNormalPlusZ": true
+    },
+    "textures": [
+     {
+      "path": "0/texture.jpg",
+      "resolved": "/tmp/artwall-build-hs0_z15f/model-unanchored.usdz[0/texture.jpg]"
+     }
+    ],
+    "usdValidators": {
+     "ran": [
+      "usdGeomValidators:StageMetadataChecker",
+      "usdShadeValidators:MaterialBindingApiAppliedValidator",
+      "usdShadeValidators:MaterialBindingRelationships",
+      "usdShadeValidators:ShaderSdrCompliance",
+      "usdShadeValidators:EncapsulationRulesValidator",
+      "usdUtilsValidators:UsdzPackageValidator",
+      "usdUtilsValidators:FileExtensionValidator",
+      "usdUtilsValidators:MissingReferenceValidator",
+      "usdUtilsValidators:RootPackageValidator",
+      "usdUtilsValidators:PackageEncapsulationValidator",
+      "usdValidation:CompositionErrorTest",
+      "usdValidation:AttributeTypeMismatch"
+     ],
+     "findings": []
+    }
+   }
+  }
+ },
+ "anchoring": "vertical"
+}

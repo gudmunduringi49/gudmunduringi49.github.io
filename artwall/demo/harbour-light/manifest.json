@@ -1,0 +1,84 @@
+{
+ "schema": "artwall.scene-manifest",
+ "schemaVersion": 1,
+ "generator": {
+  "name": "artwall-asset-worker",
+  "version": "0.1.0"
+ },
+ "artwork": {
+  "id": "demo-harbour-light",
+  "versionId": null,
+  "versionNumber": 1,
+  "title": "Harbour light",
+  "artist": "ArtWall demo"
+ },
+ "source": {
+  "sha256": "ac2f92744af3c37900249658b02d37c3df5103e7ae855fed4b8b7b7b19e676f5",
+  "widthPx": 2160,
+  "heightPx": 1620,
+  "exifOrientation": 1,
+  "colorProfile": "untagged (assumed sRGB)"
+ },
+ "capture": {
+  "mode": "artwork_only",
+  "corners": {
+   "space": "upright-normalized",
+   "tl": [
+    0,
+    0
+   ],
+   "tr": [
+    1,
+    0
+   ],
+   "br": [
+    1,
+    1
+   ],
+   "bl": [
+    0,
+    1
+   ]
+  }
+ },
+ "measurements": {
+  "artwork": {
+   "widthMm": 1200.0,
+   "heightMm": 900.0
+  },
+  "outer": null,
+  "depthMm": 40.0,
+  "depthIsEstimate": false
+ },
+ "frame": null,
+ "edgeStyle": "texture-edge",
+ "texture": {
+  "sha256": "6dbbb52510c5db2bf3dfa5aab6eca306b084e55cab83c53e4d8c0abbc87fc0eb",
+  "widthPx": 2048,
+  "heightPx": 1536,
+  "colorSpace": "sRGB"
+ },
+ "materials": {
+  "frameColor": "#1c1c1c",
+  "matColor": "#f3f1ea"
+ },
+ "scene": {
+  "units": "m",
+  "upAxis": "Y",
+  "front": "+Z",
+  "origin": "back-plane-center",
+  "wallOffsetM": 0.001,
+  "expectedBounds": {
+   "min": [
+    -0.6,
+    -0.45,
+    0.001
+   ],
+   "max": [
+    0.6,
+    0.45,
+    0.041
+   ]
+  }
+ }
+}

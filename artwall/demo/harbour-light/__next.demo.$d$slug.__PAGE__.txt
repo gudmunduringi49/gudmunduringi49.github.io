@@ -1,0 +1,34 @@
+1:"$Sreact.fragment"
+2:"/artwall/_next/static/chunks/18p0tplnswd6c.js"
+3:I[11557,["$2"],"SiteHeader"]
+4:I[39756,["$2"],"default"]
+5:I[37457,["$2"],"default"]
+6:I[22016,["$2"],""]
+f:"/artwall/_next/static/chunks/36s4_8qjti_ij.js"
+10:"/artwall/_next/static/chunks/2ylv136_y-9up.js"
+11:I[54579,["$2","$f","$10"],"ArtworkView"]
+12:I[97367,["$2"],"OutletBoundary"]
+13:"$Sreact.suspense"
+16:"ViewportBoundary"
+17:I[97367,["$2"],"$16"]
+18:"MetadataBoundary"
+19:I[97367,["$2"],"$18"]
+1a:I[27201,["$2"],"IconMark"]
+:HL["/artwall/_next/static/chunks/1imrqucj8r316.css","style"]
+8:X
+b:X
+b:C
+e:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","$L11",null,{"model":{"galleryName":"ArtWall demo","title":"Harbour light","artist":"ArtWall demo","year":"2026","medium":"Generated study, oil-like colour fields on canvas (demo)","availability":"available","mode":"artwork_only","artwork":{"widthMm":1200,"heightMm":900},"outer":null,"depthMm":40,"depthIsEstimate":false,"frame":null,"posterUrl":"/artwall/demo/harbour-light/poster.jpg","thumbUrl":"/artwall/demo/harbour-light/thumb.jpg","glbUrl":"/artwall/demo/harbour-light/model.glb","usdzUrl":"/artwall/demo/harbour-light/model.usdz","notes":"Unframed canvas; the sides repeat the painting's edge colour.","analytics":null}}],[["$","script","script-0",{"src":"/artwall/_next/static/chunks/36s4_8qjti_ij.js","async":true}],["$","script","script-1",{"src":"/artwall/_next/static/chunks/2ylv136_y-9up.js","async":true}]],["$","$L12",null,{"children":["$","$13",null,{"name":"Next.MetadataOutlet","children":"$@14"}]}]]}],"p":"$@15","v":null,"s":"$8"}}]]
+c:[["children",{"s":{"n":"slug","t":"d","k":"harbour-light","s":[]},"h":65632,"d":{"r":["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]]}],"p":"$@d","v":"$b","s":"$8"},"c":"$Qe"}]]
+9:[["children",{"s":"demo","h":131168,"d":{"r":["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]]}],"p":"$@a","v":"$b","s":"$8"},"c":"$Qc"}]]
+0:{"t":{"t":{"s":"","h":131152,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/artwall/_next/static/chunks/1imrqucj8r316.css","precedence":"next"}],["$","script","script-0",{"src":"/artwall/_next/static/chunks/18p0tplnswd6c.js","async":true}]],["$","html",null,{"lang":"en","className":"NMy_5a_variable","children":["$","body",null,{"children":[["$","a",null,{"href":"#main","className":"skip-link","children":"Skip to content"}],["$","$L3",null,{}],["$","main",null,{"id":"main","children":["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}],"notFound":[["$","div",null,{"className":"wrap pt-12","children":[["$","h1",null,{"className":"heading","children":"Not found"}],["$","p",null,{"className":"mt-6","children":"This work is not published, the link has expired, or the address is wrong."}],["$","$L6",null,{"href":"/demo/","className":"btn btn-secondary mt-10","children":"See the demo works"}]]}],[]]}]}],["$","footer",null,{"className":"wrap rule mt-24 flex flex-col gap-3 py-10 text-[13px] sm:flex-row sm:items-center sm:justify-between","children":[["$","span",null,{"className":"label text-[var(--color-faint)]","children":"ArtWall · paintings at their true size"}],["$","span",null,{"className":"flex gap-6","children":[["$","$L6",null,{"className":"link","href":"/diagnostics/ar/","children":"AR test"}],["$","$L6",null,{"className":"link","href":"/about/","children":"About & privacy"}]]}]]}]]}]}]]}],"p":"$@7","v":null,"s":"$8"},"c":"$Q9"},"h":{"r":["$","$1","h",{"children":[null,["$","$L17",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#ffffff"}]]}],["$","$L19",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$13",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Harbour light (demo) · ArtWall"}],["$","meta","1",{"name":"description","content":"See a painting on your own wall at its true size."}],["$","link","2",{"rel":"manifest","href":"/artwall/manifest.webmanifest"}],["$","meta","3",{"name":"mobile-web-app-capable","content":"yes"}],["$","meta","4",{"name":"apple-mobile-web-app-title","content":"ArtWall"}],["$","meta","5",{"name":"apple-mobile-web-app-status-bar-style","content":"default"}],["$","link","6",{"rel":"icon","href":"/artwall/icons/icon-192.png"}],["$","link","7",{"rel":"apple-touch-icon","href":"/artwall/icons/apple-touch-icon.png"}],["$","$L1a","8",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@1b","v":null,"s":"$8"}},"a":"$@1c","u":"$@1d","b":"rihdphd0YVWr6SR08IUTE"}
+14:null
+8:300
+1d:true
+8:C
+1c:0
+d:"$undefined"
+a:"$undefined"
+7:"$undefined"
+1b:"$undefined"
+15:"$undefined"
