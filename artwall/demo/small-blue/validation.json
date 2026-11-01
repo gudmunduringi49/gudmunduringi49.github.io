@@ -1,0 +1,161 @@
+{
+ "ok": true,
+ "glb": {
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "checks": {
+   "bytes": 123132,
+   "bounds": {
+    "world": [
+     [
+      -0.14499999582767487,
+      -0.17249999940395355,
+      0.0010000000474974513
+     ],
+     [
+      0.14499999582767487,
+      0.17249999940395355,
+      0.03099999949336052
+     ]
+    ],
+    "expected": {
+     "min": [
+      -0.145,
+      -0.1725,
+      0.001
+     ],
+     "max": [
+      0.145,
+      0.1725,
+      0.031
+     ]
+    }
+   },
+   "uvOrientation": {
+    "topLeftUv": [
+     0.0,
+     0.0
+    ],
+    "bottomRightUv": [
+     1.0,
+     1.0
+    ]
+   }
+  }
+ },
+ "usdz": {
+  "model.usdz": {
+   "ok": true,
+   "errors": [],
+   "warnings": [],
+   "checks": {
+    "bytes": 122930,
+    "files": [
+     "model.usdc",
+     "0/texture.jpg"
+    ],
+    "zip": "stored, aligned",
+    "stage": {
+     "metersPerUnit": 1.0,
+     "metersPerUnitAuthored": true,
+     "upAxis": "Y",
+     "defaultPrim": "/ArtWall"
+    },
+    "anchoring": {
+     "expected": "vertical",
+     "apiSchemas": [
+      "Preliminary_AnchoringAPI"
+     ],
+     "type": "plane",
+     "alignment": "vertical"
+    },
+    "bounds": {
+     "canonical": [
+      [
+       -0.14499999582767487,
+       -0.17249999940395355,
+       0.0010000000474973745
+      ],
+      [
+       0.14499999582767487,
+       0.17249999940395355,
+       0.030999999493360596
+      ]
+     ],
+     "world": [
+      [
+       -0.14499999582767487,
+       0.001000000047497413,
+       -0.17249999940395355
+      ],
+      [
+       0.14499999582767487,
+       0.030999999493360558,
+       0.17249999940395355
+      ]
+     ],
+     "expected": {
+      "min": [
+       -0.145,
+       -0.1725,
+       0.001
+      ],
+      "max": [
+       0.145,
+       0.1725,
+       0.031
+      ]
+     },
+     "expectedAnchorSpace": {
+      "min": [
+       -0.145,
+       0.001,
+       -0.1725
+      ],
+      "max": [
+       0.145,
+       0.031,
+       0.1725
+      ]
+     }
+    },
+    "uvOrientation": {
+     "topLeftSt": [
+      0.0,
+      1.0
+     ],
+     "bottomRightSt": [
+      1.0,
+      0.0
+     ],
+     "frontNormalPlusZ": true
+    },
+    "textures": [
+     {
+      "path": "0/texture.jpg",
+      "resolved": "/tmp/artwall-build-6b8khhaj/model.usdz[0/texture.jpg]"
+     }
+    ],
+    "usdValidators": {
+     "ran": [
+      "usdGeomValidators:StageMetadataChecker",
+      "usdShadeValidators:MaterialBindingApiAppliedValidator",
+      "usdShadeValidators:MaterialBindingRelationships",
+      "usdShadeValidators:ShaderSdrCompliance",
+      "usdShadeValidators:EncapsulationRulesValidator",
+      "usdUtilsValidators:UsdzPackageValidator",
+      "usdUtilsValidators:FileExtensionValidator",
+      "usdUtilsValidators:MissingReferenceValidator",
+      "usdUtilsValidators:RootPackageValidator",
+      "usdUtilsValidators:PackageEncapsulationValidator",
+      "usdValidation:CompositionErrorTest",
+      "usdValidation:AttributeTypeMismatch"
+     ],
+     "findings": []
+    }
+   }
+  }
+ },
+ "anchoring": "vertical"
+}

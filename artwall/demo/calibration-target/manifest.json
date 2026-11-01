@@ -1,0 +1,84 @@
+{
+ "schema": "artwall.scene-manifest",
+ "schemaVersion": 1,
+ "generator": {
+  "name": "artwall-asset-worker",
+  "version": "0.1.0"
+ },
+ "artwork": {
+  "id": "demo-calibration-target",
+  "versionId": null,
+  "versionNumber": 1,
+  "title": "Calibration target",
+  "artist": "ArtWall demo"
+ },
+ "source": {
+  "sha256": "4b9f6008dfd3b337e3ff9695316a6f75ef214ab1537c2fc2f00366868762f494",
+  "widthPx": 2400,
+  "heightPx": 1800,
+  "exifOrientation": 1,
+  "colorProfile": "untagged (assumed sRGB)"
+ },
+ "capture": {
+  "mode": "artwork_only",
+  "corners": {
+   "space": "upright-normalized",
+   "tl": [
+    0,
+    0
+   ],
+   "tr": [
+    1,
+    0
+   ],
+   "br": [
+    1,
+    1
+   ],
+   "bl": [
+    0,
+    1
+   ]
+  }
+ },
+ "measurements": {
+  "artwork": {
+   "widthMm": 800.0,
+   "heightMm": 600.0
+  },
+  "outer": null,
+  "depthMm": 25.0,
+  "depthIsEstimate": false
+ },
+ "frame": null,
+ "edgeStyle": "solid",
+ "texture": {
+  "sha256": "fdec8e608d637957ac1e777c6bd343ff00d04d5990a5ff1d32d2e5868de6810e",
+  "widthPx": 2048,
+  "heightPx": 1536,
+  "colorSpace": "sRGB"
+ },
+ "materials": {
+  "frameColor": "#1c1c1c",
+  "matColor": "#f3f1ea"
+ },
+ "scene": {
+  "units": "m",
+  "upAxis": "Y",
+  "front": "+Z",
+  "origin": "back-plane-center",
+  "wallOffsetM": 0.001,
+  "expectedBounds": {
+   "min": [
+    -0.4,
+    -0.3,
+    0.001
+   ],
+   "max": [
+    0.4,
+    0.3,
+    0.026
+   ]
+  }
+ }
+}
